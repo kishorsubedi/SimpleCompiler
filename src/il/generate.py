@@ -98,7 +98,8 @@ class IlGenerator(object):
         a, blk = self.expr(blk, dest, n.children[1])
         return blk
 
-    def print_action(self, blk, n):#messy TO LOOK
+    def print_action(self, blk, n):
+        
         a, blk = self.expr(blk, None, n.children[0])
         blk.append(il.Instruction(il.OPS['PRINT'], a, None, None))
         return blk
@@ -165,18 +166,20 @@ class IlGenerator(object):
         if(len(n.children) == 2):
             
             a, a_out_blk = self.expr(a_in_blk, None, n.children[0]) #check 1st expression, return block, a==condition
-
+            #print(a_out_blk)
             b_in_blk = self.function().new_block()
+            
             exit_blk = self.function().new_block()
             #else_blk = self.function().new_block()
 
             a_out_blk.if_link(a, b_in_blk , exit_blk)
             #                    on-true   on-false
-            #print(n.children[1])
-            b_out_blk = self.stmt(b_in_blk, (n.children[1]))
-            b_out_blk.goto_link(exit_blk)
             
-            return b_out_blk
+            b_out_blk = self.stmt(b_in_blk, (n.children[1]))
+            #print(b_out_blk)
+            b_out_blk.goto_link(exit_blk)
+            #print(exit_blk)
+            return exit_blk
         else:
             #print("ds")
             a, a_out_blk = self.expr(a_in_blk, None, n.children[0]) #check 1st expression, return block, a==condition
@@ -222,7 +225,9 @@ class IlGenerator(object):
         pass
 
     def break_action(self, blk, n):
-        blk.append(il.Instruction(il.OPS['BREAK'], a, None, result)) 
+        exit_blk = self.function().new_block()
+        blk.goto_link(exit_blk)
+        return exit_blk
         # TODO: IMPLEMENT
 
     def continue_action(self, blk, n):
