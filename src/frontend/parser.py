@@ -211,7 +211,7 @@ class _Parser(object):
             n = Node("break")
             return n, break_idx
         name, name_idx = self.consume(break_idx, TOKEN_IDS["NAME"])
-        n = Node("break").addkid(name)
+        n = Node("break").addkid(Node("NAME", name.lexeme)) 
         return n, name_idx
         
 

@@ -163,27 +163,16 @@ class IlGenerator(object):
         
         a_in_blk = entry 
         if(len(n.children) == 2): #if cond stmt
-            #print('ds')
-            #print(a_in_blk)
-            #a_OUT_BLK 3
-            a, a_out_blk = self.expr(a_in_blk, None, n.children[0]) #check 1st expression, return block, a==condition
-            
-            
+
+            a, a_out_blk = self.expr(a_in_blk, None, n.children[0]) #check 1st expression, return block, a==condition 
             exit_blk = self.function().new_block() #4
             b_in_blk = self.function().new_block() #5
             
-            #else_blk = self.function().new_block()
-
             a_out_blk.if_link(a, b_in_blk , exit_blk) 
             #                    on-true   on-false
-            #print(a_out_blk)
-            
             b_out_blk = self.stmt(b_in_blk, (n.children[1]))
-            #print(b_in_blk)
-            
             b_out_blk.goto_link(exit_blk)
-            #print(b_out_blk)
-            #print(exit_blk)
+
             return exit_blk
         else: #if cond stmt else stmt/block
             a, a_out_blk = self.expr(a_in_blk, None, n.children[0]) #check 1st expression, return block, a==condition
@@ -228,13 +217,13 @@ class IlGenerator(object):
         pass
 
     def break_action(self, blk, n):
-        if(len(n.children) ==0):
-            a = self.function().new_block()
-            exit_blk = self.function().loop_exit()   
-            #exit_blk = self.function().new_block()
-            blk.goto_link(exit_blk)
-            return a
-            
+        #if(len(n.children) ==0):
+        a = self.function().new_block()
+        exit_blk = self.function().loop_exit()   
+        #exit_blk = self.function().new_block()
+        blk.goto_link(exit_blk)
+        return a
+        #else:
             
 
     def continue_action(self, blk, n):

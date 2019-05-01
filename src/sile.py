@@ -29,7 +29,6 @@ def run(config):
 
     try:
         ast = frontend.parse(tokens)
-    
     except frontend.SileParseError, e:
         print >>sys.stderr, e
         return 2
