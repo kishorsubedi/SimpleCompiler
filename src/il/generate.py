@@ -213,19 +213,30 @@ class IlGenerator(object):
         return afterwards
 
     def label_action(self, entry, n):
-        # TODO: IMPLEMENT
-        pass
+        cont_blk = self.function().new_block()
+        exit_blk = self.function().new_block()
+        return self._label_action(
+            entry, n.children[0].value, n.children[1], cont_blk, exit_blk
+        )
+    
+    def _label_action(self, entry, name, stmt, cont_blk, exit_blk):
+        self.function().add_label(name, cont_blk, exit_blk)
+        self.symbols[name] = self.function().labels[name]
+        entry.goto_link(cont_blk)
+        afterwards = self.stmt(cont_blk, stmt)
+        afterwards.goto_link(exit_blk)
+        return exit_blk
 
     def break_action(self, blk, n):
-        #if(len(n.children) ==0):
-        a = self.function().new_block()
-        exit_blk = self.function().loop_exit()   
-        #exit_blk = self.function().new_block()
-        blk.goto_link(exit_blk)
-        return a
-        #else:
+        if len(n.children) == 0:
+            header = self.function().loop_exit()
+        else:
+            label = n.children[0].value
+            header = self.symbols[label].exit_blk
+        blk.goto_link(header)
+        dead = self.function().new_block()
+        return dead
             
-
     def continue_action(self, blk, n):
         if len(n.children) == 0:
             header = self.function().loop_cont()
